@@ -63,7 +63,7 @@ class ViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ToLikedList" {
             let vc = segue.destination as!
-                LikedListTableViewController
+            LikedListTableViewController
             
             vc.likedName = likedName
         }
@@ -80,7 +80,7 @@ class ViewController: UIViewController {
     
     
     
-
+    
     @IBAction func swipeCard(_ sender: UIPanGestureRecognizer) {
         
         // 【ベースカードを動かす】
@@ -120,13 +120,16 @@ class ViewController: UIViewController {
         }
         
         
-        if sender.state == UIGestureRecognizer.State.ended {
-            // 離した時点のカードの中心の位置が左から50以内のとき
+        // 【どっか行かないようにする処理】元の位置に戻す
+        if sender.state == UIGestureRecognizer.State.ended {    // .ended は指を離した時
+            
+            // 【カードを画面外に飛ばす処理】
             if card.center.x < 50 {
-                // 左に大きくスワイプしたときの処理
+                // 【左に大きくスワイプしたときの処理】
                 UIView.animate(withDuration: 0.5, animations: {
-                    // 該当のユーザーカードを画面外(マイナス方向)へ飛ばす
-                    self.personList[self.selectedCardCount].center = CGPoint(x:self.personList[self.selectedCardCount].center.x - 500, y: self.personList[self.selectedCardCount].center.y)
+                    // 左へ飛ばす場合
+                    // X座標を左に500とばす(-500)
+                    self.personList[self.selectedCardCount].center = CGPoint(x:self.personList[self.selectedCardCount].center.x - 500, y: self.personList[self.selectedCardCount].center.y)    // 横に500飛ばせば画面から消える（あまり良い処理ではないらしい）
                     // ベースカードを元に戻す処理
                     self.resetCard()
                     
@@ -140,10 +143,12 @@ class ViewController: UIViewController {
                     performSegue(withIdentifier: "ToLikedList", sender: self)
                 }
                 // 離した時点のカードの中心の位置が右から50以内のとき
-            } else if card.center.x > self.view.frame.width - 50 {
-                // 右に大きくスワイプしたときの処理
+            } else if card.center.x > self.view.frame.width - 50 {    // self.view.frame.width は画面の横幅いっぱい
+                // 【右に大きくスワイプしたときの処理】
                 UIView.animate(withDuration: 0.5, animations: {
-                    // 該当のユーザーカードを画面外(プラス方向)へ飛ばす
+                    
+                    // 右へ飛ばす場合
+                    // X座標を右に500とばす(+500)
                     self.personList[self.selectedCardCount].center = CGPoint(x:self.personList[self.selectedCardCount].center.x + 500, y: self.personList[self.selectedCardCount].center.y)
                     // ベースカードを元に戻す処理
                     self.resetCard()
@@ -151,19 +156,20 @@ class ViewController: UIViewController {
                 // likeImageを隠す
                 likeImage.isHidden = true
                 // いいねされたリストに追加
-                likedName.append(nameList[selectedCardCount])
+                likedName.append(nameList[selectedCardCount])    // selectedCardCount += 1 よりも前に書く！ 次の人の名前が入っちゃうから。
                 // 次のカードへ
-                selectedCardCount += 1
+                selectedCardCount += 1    // これ書く場所大事！ 上に書くと最初からガリレオでてくる等おかしくなる
                 // 画面遷移
                 if selectedCardCount >= personList.count {
                     performSegue(withIdentifier: "ToLikedList", sender: self)
                 }
                 
             } else {
-                // それ以外は元の位置に戻す
+                // 【sender.state が指を離した状態と一緒だったら】（つまりカードを飛ばさない場合の処理）
+                // クロージャによるアニメーションの追加（梅子がマッハで戻ってくるのをいい感じにするため）
                 UIView.animate(withDuration: 0.5, animations: {
                     // ベースカードを元に戻す処理
-                    self.resetCard()
+                    self.resetCard()    // クロージャの中は独立しているから？ self が必要になる。
                     // ユーザーカードを元の位置に戻す
                     self.personList[self.selectedCardCount].center = self.centerOfCard
                     // ユーザーカードの角度を元の位置に戻す
@@ -172,81 +178,7 @@ class ViewController: UIViewController {
                 // likeImageを隠す
                 likeImage.isHidden = true
             }
-        
-        
-        
-        
-//        // 【どっか行かないようにする処理】元の位置に戻す
-//        if sender.state == UIGestureRecognizer.State.ended {    // .ended は指を離した時
-//
-//            // 【カードを画面外に飛ばす処理】
-//            if card.center.x < 50 {
-//                // 【左に大きくスワイプしたときの処理】
-//                UIView.animate(withDuration: 0.5, animations: {
-//                    // 左へ飛ばす場合
-//                    // X座標を左に500とばす(-500)
-//                    self.personList[self.selectedCardCount].center = CGPoint(x: self.personList[self.selectedCardCount].center.x - 500, y :self.personList[self.selectedCardCount].center.y)    // 横に500飛ばせば画面から消える（あまり良い処理ではないらしい）
-//
-//
-//                })
-//                // ベースカードを元に戻す
-//                resetCard()
-//                // likeImage を隠す
-//                likeImage.isHidden = true
-//                // 次のカードへ
-//                selectedCardCount += 1    // これ書く場所大事！ 上に書くと最初からガリレオでてくる等おかしくなる
-//
-//                if selectedCardCount >= personList.count {
-//                        performSegue(withIdentifier: "ToLikedList", sender: self)
-//                    }
-//                }
-//
-//            } else if card.center.x > self.view.frame.width - 50 {    // self.view.frame.width は画面の横幅いっぱい
-//                // 【右に大きくスワイプしたときの処理】
-//                 UIView.animate(withDuration: 0.5, animations: {
-//                // 右へ飛ばす場合
-//                // X座標を右に500とばす(+500)
-//                    self.personList[self.selectedCardCount].center = CGPoint(x: self.personList[self.selectedCardCount].center.x + 500, y :self.personList[self.selectedCardCount].center.y)
-//                 })
-//                // ベースカードを元に戻す
-//                resetCard()
-//                // likeImage を隠す
-//                likeImage.isHidden = true
-//                // いいねリストに追加
-//                likedName.append(nameList[selectedCardCount])    // selectedCardCount += 1 よりも前に書く！ 次の人の名前が入っちゃうから。
-//                // 次のカードへ
-//                selectedCardCount += 1
-//                if selectedCardCount >= personList.count {
-//                performSegue(withIdentifier: "ToLikedList", sender: self)
-//            }
-//
-//
-//
-//            } else {
-//                // 【sender.state が指を離した状態と一緒だったら】（つまりカードを飛ばさない場合の処理）
-//                // クロージャによるアニメーションの追加（梅子がマッハで戻ってくるのをいい感じにするため）
-//                UIView.animate(withDuration: 0.5, animations: {
-//                    // ユーザーカードを元の位置に戻す
-//                    self.personList[self.selectedCardCount].center = self.centerOfCard    // 上と同様に self が必要。
-//
-//                    // ユーザーカードの角度を戻す
-//                    self.personList[self.selectedCardCount].transform = .identity
-//
-//                    // ベースカードを元に戻す
-//                    self.resetCard()    // クロージャの中は独立しているから？ self が必要になる。
-//                    // likeImage を隠す
-//                    self.likeImage.isHidden = true
-//                })
-//
-//            }
-//
-//
-        
-            
-            
-            
-            
+        }
     }
 }
-
-}
+s
