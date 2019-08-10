@@ -189,15 +189,15 @@ class ViewController: UIViewController {
             self.personList[self.selectedCardCount].center =
                 CGPoint(x:self.personList[self.selectedCardCount].center.x - 500, y:self.personList[self.selectedCardCount].center.y)
         })
-
+        
         selectedCardCount += 1
         if selectedCardCount >= personList.count {
             performSegue(withIdentifier: "ToLikedList", sender: self)
         }
-            
-            
-            
-    
+        
+        
+        
+        
     }
     
     @IBAction func likeButton(_ sender: Any) {
@@ -213,9 +213,9 @@ class ViewController: UIViewController {
         if selectedCardCount >= personList.count {
             performSegue(withIdentifier: "ToLikedList", sender: self)
         }
+        
+        
+    }
     
     
-}
-
-
 }
