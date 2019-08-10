@@ -180,5 +180,42 @@ class ViewController: UIViewController {
             }
         }
     }
+    
+    
+    @IBAction func dislikeBurron(_ sender: Any) {
+        
+        UIView.animate(withDuration: 0.5, animations: {
+            self.resetCard()
+            self.personList[self.selectedCardCount].center =
+                CGPoint(x:self.personList[self.selectedCardCount].center.x - 500, y:self.personList[self.selectedCardCount].center.y)
+        })
+
+        selectedCardCount += 1
+        if selectedCardCount >= personList.count {
+            performSegue(withIdentifier: "ToLikedList", sender: self)
+        }
+            
+            
+            
+    
+    }
+    
+    @IBAction func likeButton(_ sender: Any) {
+        
+        UIView.animate(withDuration: 0.5, animations: {
+            self.resetCard()
+            self.personList[self.selectedCardCount].center =
+                CGPoint(x:self.personList[self.selectedCardCount].center.x + 500, y:self.personList[self.selectedCardCount].center.y)
+        })
+        likedName.append(nameList[selectedCardCount])
+        selectedCardCount += 1
+        
+        if selectedCardCount >= personList.count {
+            performSegue(withIdentifier: "ToLikedList", sender: self)
+        }
+    
+    
 }
-s
+
+
+}
