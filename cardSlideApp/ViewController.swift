@@ -60,6 +60,20 @@ class ViewController: UIViewController {
         personList.append(person5)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // カウント初期化
+        selectedCardCount = 0
+        // リスト初期化
+        likedName = []
+    }
+    
+    // view が表示されなくなった時
+    override func viewDidDisappear(_ animated: Bool) {
+        resetPersonList()
+    }
+    
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ToLikedList" {
             let vc = segue.destination as!
@@ -70,7 +84,7 @@ class ViewController: UIViewController {
     }
     
     
-    // 【ベースカードを元に戻す】
+    // 【ベースカードを元に戻す】関数
     func resetCard() {
         // 位置を戻す
         baseCard.center = centerOfCard    // ベースカードはどこで指を離そうが元の位置に戻す必要がある。
@@ -78,6 +92,15 @@ class ViewController: UIViewController {
         baseCard.transform = .identity    // .identity で元に戻る
     }
     
+    
+    // 【最後まで終わったあとの処理】の関数
+    func resetPersonList() {
+        // 津田梅子たちを元の位置に戻す
+        for person in personList {
+            person.center = self.centerOfCard
+            person.transform = .identity
+        }
+    }
     
     
     
@@ -181,6 +204,8 @@ class ViewController: UIViewController {
         }
     }
     
+   
+    
     
     @IBAction func dislikeBurron(_ sender: Any) {
         
@@ -194,10 +219,6 @@ class ViewController: UIViewController {
         if selectedCardCount >= personList.count {
             performSegue(withIdentifier: "ToLikedList", sender: self)
         }
-        
-        
-        
-        
     }
     
     @IBAction func likeButton(_ sender: Any) {
@@ -213,9 +234,5 @@ class ViewController: UIViewController {
         if selectedCardCount >= personList.count {
             performSegue(withIdentifier: "ToLikedList", sender: self)
         }
-        
-        
     }
-    
-    
 }
